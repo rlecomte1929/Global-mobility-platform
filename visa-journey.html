@@ -9,15 +9,33 @@
 <body>
   <header>
     <h1>Visa Application Journey</h1>
-    <p>From 🇫🇷 France to 🇳🇴 Norway</p>
+    <p>Select your route below to visualize your visa journey</p>
   </header>
 
   <main>
+    <div class="selectors">
+      <label for="origin">From:</label>
+      <select id="origin">
+        <option value="France">🇫🇷 France</option>
+        <option value="India">🇮🇳 India</option>
+        <option value="Brazil">🇧🇷 Brazil</option>
+        <option value="Nigeria">🇳🇬 Nigeria</option>
+      </select>
+
+      <label for="destination">To:</label>
+      <select id="destination">
+        <option value="Norway">🇳🇴 Norway</option>
+        <option value="Canada">🇨🇦 Canada</option>
+        <option value="Germany">🇩🇪 Germany</option>
+        <option value="Japan">🇯🇵 Japan</option>
+      </select>
+    </div>
+
     <div class="map-container">
       <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/BlankMap-World-noborders.png/800px-BlankMap-World-noborders.png" alt="World Map" />
-      <div class="arrow"></div>
       <div class="origin">France</div>
       <div class="destination">Norway</div>
+      <div class="arrow"></div>
     </div>
 
     <section class="steps">
@@ -36,5 +54,7 @@
   <footer>
     <p>VisaVision © 2025</p>
   </footer>
+
+  <script src="visa-journey.js"></script>
 </body>
 </html>
