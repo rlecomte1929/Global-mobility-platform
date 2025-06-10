@@ -80,3 +80,19 @@ footer {
   background: #e0e0e0;
   color: #333;
 }
+.selectors {
+  max-width: 800px;
+  margin: 2rem auto;
+  text-align: center;
+}
+
+.selectors label,
+.selectors select {
+  font-size: 1rem;
+  margin: 0 0.5rem;
+  padding: 0.5rem;
+}
+
+.origin, .destination {
+  transition: all 0.3s ease-in-out;
+}
