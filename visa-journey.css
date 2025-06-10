@@ -1,0 +1,82 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f0f8ff;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+header {
+  background: #0077b6;
+  color: white;
+  padding: 1rem 2rem;
+  text-align: center;
+}
+
+.map-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.map-container img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.origin, .destination {
+  position: absolute;
+  background: #00b4d8;
+  color: white;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.origin {
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+}
+
+.destination {
+  top: 20%;
+  right: 15%;
+  transform: translate(50%, -50%);
+}
+
+.arrow {
+  position: absolute;
+  top: 35%;
+  left: 25%;
+  width: 50%;
+  height: 2px;
+  border-top: 4px dashed #03045e;
+  transform: rotate(-20deg);
+}
+
+.steps {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.steps h2 {
+  margin-top: 0;
+}
+
+.steps ol {
+  padding-left: 1.2rem;
+}
+
+footer {
+  text-align: center;
+  padding: 1rem;
+  background: #e0e0e0;
+  color: #333;
+}
