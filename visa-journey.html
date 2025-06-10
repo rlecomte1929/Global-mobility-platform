@@ -1,60 +1,449 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Visa Journey – VisaVision</title>
-  <link rel="stylesheet" href="visa-journey.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Mobility Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide-react@0.294.0/dist/umd/lucide-react.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Light gray background */
+        }
+.sidebar {
+            width: 280px;
+            background-color: #1f2937; /* Darker sidebar */
+            color: #e5e7eb;
+            transition: width 0.3s ease-in-out;
+        }
+.sidebar-collapsed {
+            width: 80px;
+        }
+.sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #d1d5db;
+            transition: background-color 0.2s ease, color 0.2s ease;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+.sidebar-link:hover,
+        .sidebar-link-active {
+            background-color: #374151; /* Slightly lighter on hover/active */
+            color: #ffffff;
+        }
+.sidebar-link svg {
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+.sidebar-link .link-text {
+            opacity: 1;
+            transition: opacity 0.3s ease-in-out;
+        }
+.sidebar-collapsed .sidebar-link .link-text {
+            opacity: 0;
+            width: 0;
+        }
+        
+        .sidebar-collapsed .sidebar-link svg {
+            margin-right: 0; /* Center icon when collapsed */
+        }
+        .sidebar-collapsed .sidebar-link {
+            justify-content: center;
+        }
+.header {
+            background-color: #ffffff;
+            border-bottom: 1px solid #e5e7eb;
+        }
+.card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+.main-content {
+            transition: margin-left 0.3s ease-in-out;
+            margin-left: 280px; /* Default sidebar width */
+        }
+.main-content-collapsed {
+            margin-left: 80px; /* Collapsed sidebar width */
+        }
+/* Chatbot styles */
+        .chatbot-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 380px;
+            max-height: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1000;
+            transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+            transform: translateY(20px);
+            opacity: 0;
+        }
+.chatbot-container.open {
+            transform: translateY(0);
+            opacity: 1;
+        }
+.chatbot-header {
+            background-color: #1e40af; /* Primary blue */
+            color: white;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
+        }
+.chatbot-body {
+            flex-grow: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+.chat-message {
+            padding: 10px 14px;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+.user-message {
+            background-color: #dbeafe; /* Light blue for user */
+            color: #1e3a8a;
+            align-self: flex-end;
+            border-bottom-right-radius: 0;
+        }
+.bot-message {
+            background-color: #e5e7eb; /* Light gray for bot */
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 0;
+        }
+        .bot-message.typing-indicator span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin: 0 2px;
+            background-color: #4b5563;
+            border-radius: 50%;
+            animation: typing 1s infinite;
+        }
+        .bot-message.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .bot-message.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typing {
+            0%, 100% { opacity: 0.3; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-3px); }
+        }
+.chatbot-footer {
+            padding: 12px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 8px;
+        }
+.chatbot-footer input {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+        }
+        .chatbot-footer input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+        }
+.chatbot-footer button {
+            background-color: #2563eb; /* Primary blue */
+            color: white;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .chatbot-footer button:hover {
+            background-color: #1d4ed8; /* Darker blue */
+        }
+.chatbot-toggle-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #1e40af; /* Primary blue */
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 999; /* Below chatbot window when open */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+         .chatbot-toggle-button.hidden {
+            transform: scale(0.8);
+            opacity: 0;
+        }
+.quick-reply-button {
+            background-color: #e0e7ff;
+            color: #3730a3;
+            border: 1px solid #c7d2fe;
+            padding: 8px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease;
+            margin-top: 8px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+        .quick-reply-button:hover {
+            background-color: #c7d2fe;
+        }
+        .quick-replies-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+    </style>
 </head>
-<body>
-  <header>
-    <h1>Visa Application Journey</h1>
-    <p>Select your route below to visualize your visa journey</p>
-  </header>
-
-  <main>
-    <div class="selectors">
-      <label for="origin">From:</label>
-      <select id="origin">
-        <option value="France">🇫🇷 France</option>
-        <option value="India">🇮🇳 India</option>
-        <option value="Brazil">🇧🇷 Brazil</option>
-        <option value="Nigeria">🇳🇬 Nigeria</option>
-      </select>
-
-      <label for="destination">To:</label>
-      <select id="destination">
-        <option value="Norway">🇳🇴 Norway</option>
-        <option value="Canada">🇨🇦 Canada</option>
-        <option value="Germany">🇩🇪 Germany</option>
-        <option value="Japan">🇯🇵 Japan</option>
-      </select>
+<body class="flex">
+<aside id="sidebar" class="sidebar h-screen p-4 flex flex-col fixed top-0 left-0">
+        <div class="flex items-center mb-8 shrink-0">
+             <svg id="logoIcon" xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe-2 text-blue-400"><path d="M21.54 15H17a2 2 0 0 0-2 2v4.54"/><path d="M7 3.34V5a3 3 0 0 0 3 3v0a2 2 0 0 1 2 2v0c0 1.1.9 2 2 2v0a2 2 0 0 0 2-2v0c0-1.1.9-2 2-2h3.17"/><path d="M11 21.95V18a2 2 0 0 0-2-2v0a2 2 0 0 1-2-2v-1a2 2 0 0 0-2-2H2.05"/><circle cx="12" cy="12" r="10"/></svg>
+            <span class="link-text text-2xl font-semibold ml-3">Mobility<span class="text-blue-400">Hub</span></span>
+        </div>
+        <nav class="flex-grow space-y-2">
+            <a href="#" class="sidebar-link sidebar-link-active" data-section="dashboard">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <span class="link-text">Dashboard</span>
+            </a>
+            <a href="#" class="sidebar-link" data-section="my-assignments">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10H2"/><path d="m22 18-7-4-3 3-4-4-3 3"/><path d="M2 6h20"/><path d="M7 2v4"/><path d="M17 2v4"/></svg>
+                <span class="link-text">My Assignments</span>
+            </a>
+            <a href="#" class="sidebar-link" data-section="services">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1-1-1.72v-.51a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span class="link-text">Services</span>
+            </a>
+            <a href="#" class="sidebar-link" data-section="resources">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+                <span class="link-text">Resources</span>
+            </a>
+            <a href="#" class="sidebar-link" data-section="reports">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="20" y2="10"/><line x1="18" x2="18" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="16"/></svg>
+                <span class="link-text">Reports</span>
+            </a>
+        </nav>
+        <div class="mt-auto">
+            <button id="sidebarToggle" class="sidebar-link w-full !justify-start">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevrons-left-right"><path d="m9 7-5 5 5 5"/><path d="m15 7 5 5-5 5"/></svg>
+                <span class="link-text">Collapse</span>
+            </button>
+        </div>
+    </aside>
+<div id="mainContent" class="main-content flex-1">
+        <header class="header p-4 flex justify-between items-center sticky top-0 z-50">
+            <h1 class="text-2xl font-semibold text-gray-800 current-section-title">Dashboard</h1>
+            <div class="flex items-center space-x-4">
+                <button class="text-gray-500 hover:text-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                </button>
+                <div class="relative">
+                    <img src="https://placehold.co/40x40/E2E8F0/4A5568?text=JD" alt="User Avatar" class="w-10 h-10 rounded-full cursor-pointer">
+                    </div>
+            </div>
+        </header>
+<main class="p-6 space-y-6">
+            <section id="dashboard-content" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Active Assignments</p>
+                                <p class="text-3xl font-semibold text-gray-800">12</p>
+                            </div>
+                            <div class="p-3 bg-blue-100 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-blue-600"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Pending Tasks</p>
+                                <p class="text-3xl font-semibold text-gray-800">5</p>
+                            </div>
+                            <div class="p-3 bg-yellow-100 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-600"><path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><path d="M2 20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8l-7 5V8L7 5V4H4a2 2 0 0 0-2 2z"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Compliance Alerts</p>
+                                <p class="text-3xl font-semibold text-red-600">2</p>
+                            </div>
+                            <div class="p-3 bg-red-100 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-red-600"><path d="m21.73 18-8-14a2 2 0 0 0-3.46 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-500">Budget Utilized</p>
+                                <p class="text-3xl font-semibold text-gray-800">67%</p>
+                            </div>
+                            <div class="p-3 bg-green-100 rounded-full">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-600"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Recent Activity</h2>
+                    <ul class="space-y-3">
+                        <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-700">Visa application submitted for John Doe (Singapore)</p>
+                                <p class="text-sm text-gray-500">2 hours ago</p>
+                            </div>
+                            <span class="text-sm text-green-600 font-semibold">Completed</span>
+                        </li>
+                        <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-700">Housing search initiated for Alice Smith (London)</p>
+                                <p class="text-sm text-gray-500">1 day ago</p>
+                            </div>
+                            <span class="text-sm text-yellow-600 font-semibold">In Progress</span>
+                        </li>
+                         <li class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div>
+                                <p class="font-medium text-gray-700">Tax consultation scheduled for Bob Johnson (New York)</p>
+                                <p class="text-sm text-gray-500">3 days ago</p>
+                            </div>
+                            <span class="text-sm text-blue-600 font-semibold">Scheduled</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+<section id="my-assignments-content" class="hidden space-y-6">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Your Current Assignments</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Destination</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Start Date</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Jane Miller</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Paris, France</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-08-01</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <a href="#" class="text-indigo-600 hover:text-indigo-900">View Details</a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                        </table>
+                    </div>
+                     <button class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150 ease-in-out">
+                        Initiate New Assignment
+                    </button>
+                </div>
+            </section>
+<section id="services-content" class="hidden space-y-6">
+                 <div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-6">Available Mobility Services</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="card p-5 border border-gray-200 hover:shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text text-blue-600 mb-3"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Immigration & Visa</h3>
+                            <p class="text-sm text-gray-600 mb-3">Full support for visa applications and immigration compliance.</p>
+                            <button class="text-sm text-blue-600 hover:text-blue-800 font-medium">Request Service &rarr;</button>
+                        </div>
+                         <div class="card p-5 border border-gray-200 hover:shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-home text-green-600 mb-3"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Housing & Relocation</h3>
+                            <p class="text-sm text-gray-600 mb-3">Assistance with home finding, moving, and settling in.</p>
+                            <button class="text-sm text-green-600 hover:text-green-800 font-medium">Request Service &rarr;</button>
+                        </div>
+                        <div class="card p-5 border border-gray-200 hover:shadow-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-landmark text-purple-600 mb-3"><line x1="2" x2="22" y1="12" y2="12"/><line x1="2" x2="22" y1="6" y2="6"/><line x1="2" x2="22" y1="18" y2="18"/></svg>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-1">Tax & Compliance</h3>
+                            <p class="text-sm text-gray-600 mb-3">Expert advice on tax implications and legal compliance.</p>
+                            <button class="text-sm text-purple-600 hover:text-purple-800 font-medium">Request Service &rarr;</button>
+                        </div>
+                        </div>
+                </div>
+            </section>
+<section id="resources-content" class="hidden space-y-6">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Knowledge Base & Guides</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <a href="#" class="block p-5 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <h3 class="font-semibold text-blue-700">Global Mobility Policy Handbook</h3>
+                            <p class="text-sm text-gray-600">Complete guide to our company's global mobility policies.</p>
+                        </a>
+                        <a href="#" class="block p-5 bg-gray-50 hover:bg-gray-100 rounded-lg transition">
+                            <h3 class="font-semibold text-blue-700">Country Guides: USA</h3>
+                            <p class="text-sm text-gray-600">Cultural norms, legal info, and tips for relocating to the USA.</p>
+                        </a>
+                        </div>
+                </div>
+            </section>
+            
+            <section id="reports-content" class="hidden space-y-6">
+                <div class="card p-6">
+                    <h2 class="text-xl font-semibold text-gray-700 mb-4">Mobility Reports</h2>
+                    <p class="text-gray-600">Reporting features will be available here. (e.g., Cost analysis, assignment trends, compliance summaries).</p>
+                    </div>
+            </section>
+</main>
     </div>
-
-    <div class="map-container">
-      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/BlankMap-World-noborders.png/800px-BlankMap-World-noborders.png" alt="World Map" />
-      <div class="origin">France</div>
-      <div class="destination">Norway</div>
-      <div class="arrow"></div>
+<div id="chatbotToggleButton" class="chatbot-toggle-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
     </div>
-
-    <section class="steps">
-      <h2>Visa Process Steps</h2>
-      <ol>
-        <li>Submit Personal Details</li>
-        <li>Upload Passport</li>
-        <li>Schedule Biometrics</li>
-        <li>Pay Visa Fees</li>
-        <li>Await Confirmation</li>
-        <li>Receive Visa</li>
-      </ol>
-    </section>
-  </main>
-
-  <footer>
-    <p>VisaVision © 2025</p>
-  </footer>
-
-  <script src="visa-journey.js"></script>
-</body>
-</html>
+<div id="chatbotContainer" class="chatbot-container">
+        <div class="chatbot-header">
+            <h3 class="text-lg font-semibold">Mobility Assistant</h3>
+            <button id="closeChatbotButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+        </div>
+        <div id="chatbotBody" class="chatbot-body">
+            </div>
+        <div id="quickRepliesContainer" class="px-4 pb-2">
+            </div>
+        <div class="chatbot-footer">
+            <input type="text" id="chatInput" placeholder="Type your message..." class="flex-grow">
+            <button id="sendChatButton">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 ```
