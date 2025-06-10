@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>VisaVision – Interactive Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .dashed-arrow {
+      position: absolute;
+      border-top: 3px dashed #1d4ed8;
+      width: 40%;
+      top: 40%;
+      left: 30%;
+      transform: rotate(-10deg);
+    }
+    .label {
+      position: absolute;
+      background-color: #1d4ed8;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+    .origin {
+      top: 60%;
+      left: 20%;
+    }
+    .destination {
+      top: 25%;
+      right: 20%;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <header class="bg-white shadow p-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold text-blue-700">VisaVision Dashboard</h1>
+    <select id="language" class="border px-3 py-1 rounded">
+      <option>🇬🇧 English</option>
+      <option>🇫🇷 French</option>
+      <option>🇪🇸 Spanish</option>
+    </select>
+  </header>
+
+  <main class="p-6 max-w-6xl mx-auto space-y-6">
+    <!-- Origin and Destination Selection -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-lg font-semibold mb-4">Select Journey</h2>
+      <div class="flex space-x-4">
+        <div>
+          <label for="from" class="block font-medium mb-1">From:</label>
+          <select id="from" class="border px-3 py-2 rounded">
+            <option value="France">🇫🇷 France</option>
+            <option value="India">🇮🇳 India</option>
+            <option value="Brazil">🇧🇷 Brazil</option>
+          </select>
+        </div>
+        <div>
+          <label for="to" class="block font-medium mb-1">To:</label>
+          <select id="to" class="border px-3 py-2 rounded">
+            <option value="Norway">🇳🇴 Norway</option>
+            <option value="Germany">🇩🇪 Germany</option>
+            <option value="Canada">🇨🇦 Canada</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <!-- Map and Dashed Arrow -->
+    <section class="relative bg-white p-6 rounded shadow">
+      <h2 class="text-lg font-semibold mb-4">Visa Journey Map</h2>
+      <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/BlankMap-World-noborders.png/800px-BlankMap-World-noborders.png" class="rounded w-full" alt="World Map">
+      <div class="dashed-arrow"></div>
+      <div class="label origin">France</div>
+      <div class="label destination">Norway</div>
+    </section>
+
+    <!-- Timeline Steps -->
+    <section class="bg-white p-6 rounded shadow">
+      <h2 class="text-lg font-semibold mb-4">Visa Process Timeline</h2>
+      <ul class="space-y-2">
+        <li>✅ Submit Application</li>
+        <li>📎 Upload Passport</li>
+        <li>🗓 Schedule Biometrics</li>
+        <li>💳 Pay Fees</li>
+        <li>🎉 Visa Approval</li>
+      </ul>
+    </section>
+  </main>
+
+  <script>
+    const from = document.getElementById("from");
+    const to = document.getElementById("to");
+    const originLabel = document.querySelector(".origin");
+    const destLabel = document.querySelector(".destination");
+
+    function updateJourney() {
+      originLabel.textContent = from.value;
+      destLabel.textContent = to.value;
+    }
+
+    from.addEventListener("change", updateJourney);
+    to.addEventListener("change", updateJourney);
+  </script>
+</body>
+</html>
